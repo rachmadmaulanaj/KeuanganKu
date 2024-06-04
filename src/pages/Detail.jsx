@@ -1678,22 +1678,24 @@ class Detail extends React.Component {
         return () => unsubscribe();
     }
     getDataDetails = (docID) => {
-        const collectionDetails = collection(db, 'detail');
-        const q = query(
-            collectionDetails,
-            orderBy('date', 'desc'),
-            where('trans_id', 'in', docID),
-        );
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            let details_arr = [];
-            querySnapshot.forEach((detail) => {
-                const docType = this.state.transactions.find(v => v.id === detail.data().trans_id);
-                details_arr.push(this.convertDetailFormat({ id: detail.id, ...detail.data(), type: docType.type }));
+        if (docID.length) {
+            const collectionDetails = collection(db, 'detail');
+            const q = query(
+                collectionDetails,
+                orderBy('date', 'desc'),
+                where('trans_id', 'in', docID),
+            );
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                let details_arr = [];
+                querySnapshot.forEach((detail) => {
+                    const docType = this.state.transactions.find(v => v.id === detail.data().trans_id);
+                    details_arr.push(this.convertDetailFormat({ id: detail.id, ...detail.data(), type: docType.type }));
+                });
+                this.setState({ details: details_arr })
             });
-            this.setState({ details: details_arr })
-        });
 
-        return () => unsubscribe();
+            return () => unsubscribe();
+        }
     }
 
     handleShowMore = (e) => {
@@ -1905,8 +1907,9 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
+        this.props.checkSession();
+        
         const current_date = new Date();
-
         this.getDataFilterPeriod()
             .then(optionsFilterPeriod => {
                 this.setState({ optionsFilterPeriod }, () => {
@@ -2000,15 +2003,31 @@ class Detail extends React.Component {
                                 <div className="overflow-y-auto my-3" style={{ maxHeight: `calc(100vh - 300px)` }}>
                                     {
                                         this.state.filter.type.value === 'transaction' ?
-                                            this.state.transactions.map((transaction) => {
-                                                const detail = this.state.details.filter(v => v.trans_id === transaction.id);
-                                                const total_value_detail = detail.reduce((acc, curr) => acc + curr.value, 0);
-                                                return <CardCollapse key={transaction.id} transaction={transaction} detail={detail} total_value_detail={this.convertRupiahFormat(total_value_detail)} />
-                                            })
+                                            this.state.transactions.length ? (
+                                                this.state.transactions.map((transaction) => {
+                                                    const detail = this.state.details.filter(v => v.trans_id === transaction.id);
+                                                    const total_value_detail = detail.reduce((acc, curr) => acc + curr.value, 0);
+                                                    return <CardCollapse key={transaction.id} transaction={transaction} detail={detail} total_value_detail={this.convertRupiahFormat(total_value_detail)} />
+                                                })
+                                            ) : (
+                                                <div className="w-full my-3 sm:text-base text-sm">
+                                                    <div className="bg-white rounded-lg overflow-hidden">
+                                                        <div className="p-2 text-center">Tidak ada data</div>
+                                                    </div>
+                                                </div>
+                                            )
                                             :
-                                            this.state.details.map((detail) => {
-                                                return <CardCollapse key={detail.id} transaction={detail} detail='' total_value_detail='' />
-                                            })
+                                            this.state.details.length ? (
+                                                this.state.details.map((detail) => {
+                                                    return <CardCollapse key={detail.id} transaction={detail} detail='' total_value_detail='' />
+                                                })
+                                            ) : (
+                                                <div className="w-full my-3 sm:text-base text-sm">
+                                                    <div className="bg-white rounded-lg overflow-hidden">
+                                                        <div className="p-2 text-center">Tidak ada data</div>
+                                                    </div>
+                                                </div>
+                                            )
                                     }
                                 </div>
                                 <div className={`my-2 ${this.state.transactions.length > 5 ? 'hidden' : ''}`}>

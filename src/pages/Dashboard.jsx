@@ -1652,19 +1652,21 @@ class Dashboard extends React.Component {
         });
     }
     getDataDetails = async (docID) => {
-        const collectionDetails = collection(db, 'detail');
-        const qDetails = query(
-            collectionDetails,
-            orderBy('date', 'desc'),
-            where('trans_id', 'in', docID),
-        );
-        const queryGetDetails = await getDocs(qDetails);
-        let data = [];
-        queryGetDetails.forEach(async (doc) => {
-            const docType = this.state.transactions.find(v => v.id === doc.data().trans_id);
-            data.push(this.convertDetailFormat({ id: doc.id, ...doc.data(), type: docType.type }));
-        });
-        this.setState({ details: data });
+        if (docID.length) {
+            const collectionDetails = collection(db, 'detail');
+            const qDetails = query(
+                collectionDetails,
+                orderBy('date', 'desc'),
+                where('trans_id', 'in', docID),
+            );
+            const queryGetDetails = await getDocs(qDetails);
+            let data = [];
+            queryGetDetails.forEach(async (doc) => {
+                const docType = this.state.transactions.find(v => v.id === doc.data().trans_id);
+                data.push(this.convertDetailFormat({ id: doc.id, ...doc.data(), type: docType.type }));
+            });
+            this.setState({ details: data });
+        }
     }
     getDataLastTransactions = async () => {
         const collectionTransactions = collection(db, 'transaction');
@@ -1708,8 +1710,9 @@ class Dashboard extends React.Component {
     }
 
     componentDidMount() {
-        const current_date = new Date();
+        this.props.checkSession();
 
+        const current_date = new Date();
         this.getDataFilterPeriod()
             .then(filterPeriodOption => {
                 this.setState({ filterPeriodOption }, () => {
@@ -1777,8 +1780,11 @@ class Dashboard extends React.Component {
                         <div className="grid xl:grid-cols-3 grid-cols-1 py-5">
                             <div className="px-5">
                                 <Card color="sky">
-                                    <h5 className="sm:text-lg text-md font-semibold text-neutral-900">Saldo :</h5>
-                                    <h2 className="py-3 sm:text-5xl text-3xl text-white text-center">{this.convertRupiahFormat(this.state.infoCard.balance)}</h2>
+                                    <div>
+                                        <h5 className="sm:text-lg text-md font-semibold text-neutral-900">Saldo :</h5>
+                                        <h2 className="py-3 sm:text-5xl text-3xl text-white text-center">{this.convertRupiahFormat(this.state.infoCard.balance)}</h2>
+                                    </div>
+                                    <span className="text-blue-500 hover:text-blue-600 cursor-pointer" onClick={this.handleClickDetail} type='add'>Detail</span>
                                 </Card>
                             </div>
                             <div className="px-5">
@@ -1834,9 +1840,17 @@ class Dashboard extends React.Component {
                                     </div>
                                     <div className="overflow-y-auto my-3" style={{ maxHeight: `calc(100vh - 470px)` }}>
                                         {
-                                            this.state.details.slice(0, 6).map((detail) => {
-                                                return <CardCollapse key={detail.id} transaction={detail} detail='' total_value_detail='' />
-                                            })
+                                            this.state.details.length ? (
+                                                this.state.details.slice(0, 6).map((detail) => {
+                                                    return <CardCollapse key={detail.id} transaction={detail} detail='' total_value_detail='' />
+                                                })
+                                            ) : (
+                                                <div className="w-full my-3 sm:text-base text-sm">
+                                                    <div className="bg-white rounded-lg overflow-hidden">
+                                                        <div className="p-2 text-center">Tidak ada data</div>
+                                                    </div>
+                                                </div>
+                                            )
                                         }
                                     </div>
                                     <div className="my-2">
