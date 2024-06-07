@@ -15,10 +15,16 @@ class Verification extends React.Component {
     }
 
     handlePasscodeChange = (e) => {
-        this.setState({ passcode: e.target.value });
+        this.setState({
+            passcode: e.target.value,
+            alertBorder: false,
+        });
     }
     togglePasscodeVisibility = () => {
         this.setState((prevState) => ({ showPasscode: !prevState.showPasscode }));
+    }
+    handleInputEnter = (e) => {
+        if (e.key === 'Enter') this.verificationProcess();
     }
 
     verificationProcess = async () => {
@@ -50,6 +56,7 @@ class Verification extends React.Component {
                     icon: 'error',
                     text: text_err,
                 });
+                this.setState({ alertBorder: true });
             }
         } else {
             Swal.fire({
@@ -61,6 +68,7 @@ class Verification extends React.Component {
                 icon: 'error',
                 text: 'Ada yang salah!',
             });
+            this.setState({ alertBorder: true });
         }
     }
 
@@ -71,11 +79,12 @@ class Verification extends React.Component {
                     <h2 className="text-2xl font-bold mb-2">Akses Keamanan</h2>
                     <div className="relative w-full">
                         <input
-                            className={`shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${this.state.alertBorder.name == 'date' && this.state.alertBorder ? 'border-red-300' : 'border-gray-300'}`}
+                            className={`shadow appearance-none border rounded w-full py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${this.state.alertBorder ? 'border-red-300' : 'border-gray-300'}`}
                             type={this.state.showPasscode ? 'text' : 'password'}
                             value={this.state.passcode}
                             onChange={this.handlePasscodeChange}
                             placeholder="Masukkan Kode Keamanan"
+                            onKeyDown={this.handleInputEnter}
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
                             <button
