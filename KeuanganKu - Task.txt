@@ -1,0 +1,9 @@
+KeuanganKu - App
+
+Perbaikan Bug
+- 
+
+Fitur Baru
+- tambah format pemisah ribuan saat input value
+- tambah popup info saldo, pemasukkan, pengeluaran dan selisih (Done 3/7/2024)
+- tambah trigger enter saat input verifikasi & alert border (Done 7/6/2024)

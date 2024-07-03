@@ -1621,25 +1621,17 @@ class Dashboard extends React.Component {
             }
         });
     };
-    getDataTransactions = async (year = null, month = null) => {
+    getDataTransactionsByMonth = async (year, month) => {
         const collectionTransactions = collection(db, 'transaction');
-        let qTransactions = null;
-        if (year && month) {
-            const startMonth = new Date(parseInt(year), parseInt(month), 1);
-            const endMonth = new Date(parseInt(year), parseInt(month) + 1, 0);
+        const startMonth = new Date(parseInt(year), parseInt(month), 1);
+        const endMonth = new Date(parseInt(year), parseInt(month) + 1, 0);
 
-            qTransactions = query(
-                collectionTransactions,
-                orderBy('date', 'desc'),
-                where('date', '>=', startMonth),
-                where('date', '<=', endMonth),
-            );
-        } else {
-            qTransactions = query(
-                collectionTransactions,
-                orderBy('date', 'desc'),
-            );
-        }
+        let qTransactions = query(
+            collectionTransactions,
+            orderBy('date', 'desc'),
+            where('date', '>=', startMonth),
+            where('date', '<=', endMonth),
+        );
         const queryGetTransactions = await getDocs(qTransactions);
         let docID = [];
         let data = [];
@@ -1681,15 +1673,89 @@ class Dashboard extends React.Component {
             dataTransactions.push(this.convertTransactionFormat({ id: doc.id, ...doc.data() }));
         });
     }
+    getDataAllBalance = async (full = false) => {
+        const pastDate = new Date();
+        pastDate.setMonth(pastDate.getMonth() - 2);
+        const fiveBeforeYearMonth = new Date(pastDate.getFullYear(), pastDate.getMonth(), 1);
+
+        const collectionTransactions = collection(db, 'transaction');
+        let qTransactions = full ? query(
+            collectionTransactions,
+            orderBy('date', 'desc'),
+        ) : query(
+            collectionTransactions,
+            orderBy('date', 'desc'),
+            where('date', '>=', fiveBeforeYearMonth)
+        );
+        const queryGetTransactions = await getDocs(qTransactions);
+        let data = [];
+        queryGetTransactions.forEach(async (doc) => {
+            data.push(doc.data());
+        });
+
+        const data_format = data.reduce((acc, item) => {
+            const date = new Date(item.date.seconds * 1000);
+            const month = date.getMonth() + 1; // Bulan dimulai dari 0, jadi kita tambahkan 1
+            const year = date.getFullYear();
+            const monthYear = `${year}-${month.toString().padStart(2, '0')}`;
+    
+            if (!acc[monthYear]) {
+                const format_date = new Intl.DateTimeFormat('id-ID', { year: 'numeric', month: 'long' }).format(date);
+                acc[monthYear] = {
+                    id: year+''+month,
+                    month: format_date,
+                    final_balance_per_month: 0,
+                    real_income: 0,
+                    real_spending: 0,
+                    real_total: 0,
+                };
+            }
+            
+            if (item.type === 'balance') acc[monthYear].final_balance_per_month = item.value;
+            if (item.type === 'add') {
+                acc[monthYear].real_income += item.value;
+                acc[monthYear].real_total += item.value;
+            }
+            if (item.type === 'minus') {
+                acc[monthYear].real_spending += item.value;
+                acc[monthYear].real_total -= item.value;
+            }
+            return acc;
+        }, {});
+
+        let data_result = Object.keys(data_format).map(key => {
+            return {
+                "id": key,
+                ...data_format[key],
+                "final_balance_per_month_format": this.convertRupiahFormat(data_format[key].final_balance_per_month),
+                "real_income_format": this.convertRupiahFormat(data_format[key].real_income),
+                "real_spending_format": this.convertRupiahFormat(data_format[key].real_spending),
+                "real_total_format": this.convertRupiahFormat(data_format[key].real_total),
+            };
+        });
+
+        this.setState({
+            viewDetail: {
+                type: 'balance',
+                data: data_result,
+                total: 0,
+            },
+            isOpenModalDetail: true
+        });
+    }
 
     handleChangeFilter = (opt) => {
         this.setState({ filterPeriod: opt });
     };
     handleClickDetail = (e) => {
         const type = e.target.getAttribute('type');
+        if (type === 'balance') {
+            this.getDataAllBalance(false);
+            return false;
+        }
+
         const data = this.state.details.filter((v) => v.type === type);
         const total = data.reduce((acc, curr) => acc + curr.value, 0);
-
         this.setState({
             viewDetail: {
                 type: type,
@@ -1734,7 +1800,7 @@ class Dashboard extends React.Component {
         // Jika filter periode berubah, ambil ulang data sesuai periode yg dipilih
         if (prevState.filterPeriod !== this.state.filterPeriod) {
             const filter_period_split = this.state.filterPeriod.value.split('|');
-            this.getDataTransactions(filter_period_split[0], filter_period_split[1]);
+            this.getDataTransactionsByMonth(filter_period_split[0], filter_period_split[1]);
         }
 
         // Untuk listener filter chart
@@ -1780,11 +1846,11 @@ class Dashboard extends React.Component {
                         <div className="grid xl:grid-cols-3 grid-cols-1 py-5">
                             <div className="px-5">
                                 <Card color="sky">
-                                    <div>
-                                        <h5 className="sm:text-lg text-md font-semibold text-neutral-900">Saldo :</h5>
-                                        <h2 className="py-3 sm:text-5xl text-3xl text-white text-center">{this.convertRupiahFormat(this.state.infoCard.balance)}</h2>
+                                    <div className="flex justify-between">
+                                        <h5 className="sm:text-lg text-md font-semibold text-neutral-900">Saldo Terakhir per Bulan :</h5>
+                                        <span className="text-blue-500 hover:text-blue-600 cursor-pointer" onClick={this.handleClickDetail} type='balance'>Detail</span>
                                     </div>
-                                    <span className="text-blue-500 hover:text-blue-600 cursor-pointer" onClick={this.handleClickDetail} type='add'>Detail</span>
+                                    <h2 className="py-3 sm:text-5xl text-3xl text-white text-center">{this.convertRupiahFormat(this.state.infoCard.balance)}</h2>
                                 </Card>
                             </div>
                             <div className="px-5">
@@ -1867,7 +1933,11 @@ class Dashboard extends React.Component {
                         </div>
                     </div>
                 </div>
-                <Modal isOpen={this.state.isOpenModalDetail} onClose={this.handleCloseModalDetail} viewDetail={this.state.viewDetail} />
+                {
+                    this.state.isOpenModalDetail && (
+                        <Modal onClose={this.handleCloseModalDetail} viewMore={this.getDataAllBalance} viewDetail={this.state.viewDetail} />
+                    )
+                }
             </>
         )
     }
