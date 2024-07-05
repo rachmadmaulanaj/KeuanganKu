@@ -26,7 +26,7 @@ const Modal = (props) => {
 									<thead className="sticky top-0">
 										<tr className="bg-gray-300">
 											<th className="px-4 py-2 text-nowrap">Bulan Tahun</th>
-											<th className="px-4 py-2 text-nowrap">Saldo Akhir per Bulan</th>
+											<th className="px-4 py-2 text-nowrap">Saldo Awal per Bulan</th>
 											{/* <th className="px-4 py-2 text-nowrap">Saldo Selisih Bulan Sebelumnya</th> */}
 											<th className="px-4 py-2 text-nowrap">Real Pemasukkan</th>
 											<th className="px-4 py-2 text-nowrap">Real Pengeluaran</th>

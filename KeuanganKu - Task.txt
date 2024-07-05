@@ -4,6 +4,8 @@ Perbaikan Bug
 - 
 
 Fitur Baru
-- tambah format pemisah ribuan saat input value
+- tambah fitur pencarian detail transaksi
+- ganti format tanggal menjadi indonesia "dd MMMM yyyy HH:mm" (Done 5/7/2024)
+- ganti format input value menjadi ada pemisah ribuan (Done 5/7/2024)
 - tambah popup info saldo, pemasukkan, pengeluaran dan selisih (Done 3/7/2024)
 - tambah trigger enter saat input verifikasi & alert border (Done 7/6/2024)

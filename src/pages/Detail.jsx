@@ -7,6 +7,10 @@ import CardCollapse from "../components/CardCollapse";
 import Swal from 'sweetalert2';
 import ReactLoading from 'react-loading';
 import Select from 'react-select';
+import { NumberFormatBase } from 'react-number-format';
+import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
+import dateTimeID from 'date-fns/locale/id'; // Import locale
 
 class Detail extends React.Component {
     constructor(props) {
@@ -1524,7 +1528,7 @@ class Detail extends React.Component {
             formData: {
                 trans_id: '',
                 type: '',
-                date: '',
+                date: new Date(),
                 value: '',
                 desc: '',
                 auto_detail: false,
@@ -1595,6 +1599,14 @@ class Detail extends React.Component {
         };
         return result;
     }
+    formatRupiahInput = (numStr) => {
+        if (numStr === '') return '';
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            maximumFractionDigits: 0,
+        }).format(numStr);
+    };
 
     getDataFilterPeriod = () => {
         return new Promise(async (resolve, reject) => {
@@ -1713,17 +1725,27 @@ class Detail extends React.Component {
             }
         );
     };
-    handleChange = (e) => {
-        let name = '';
-        let value = '';
-        if (e.name) {
-            name = e.name;
-            value = e;
-        } else {
-            name = e.target.name;
-            value = e.target.value;
-        }
-
+    handleChangeInputValue = (val) => {
+        const name = 'value';
+        const value = val.floatValue;
+        this.setFormDataInput(name, value);
+    }
+    handleChangeInputText = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setFormDataInput(name, value);
+    }
+    handleChangeInputSelect = (obj) => {
+        const name = obj.name;
+        const value = obj;
+        this.setFormDataInput(name, value);
+    }
+    handleChangeInputDateTime = (val) => {
+        const name = 'date';
+        const value = val;
+        this.setFormDataInput(name, value);
+    }
+    setFormDataInput = (name, value) => {
         this.setState({
             alertBorder: { name: '', status: false }
         });
@@ -1908,7 +1930,7 @@ class Detail extends React.Component {
 
     componentDidMount() {
         this.props.checkSession();
-        
+
         const current_date = new Date();
         this.getDataFilterPeriod()
             .then(optionsFilterPeriod => {
@@ -1997,7 +2019,7 @@ class Detail extends React.Component {
                                         placeholder="Cari transaksi..."
                                         name="value"
                                         value={this.state.filter.search}
-                                        onChange={this.handleChange}
+                                        onChange={() => {}}
                                     />
                                 </div>
                                 <div className="overflow-y-auto my-3" style={{ maxHeight: `calc(100vh - 300px)` }}>
@@ -2059,7 +2081,7 @@ class Detail extends React.Component {
                                         <label className="block" htmlFor="transaction">Transaksi :</label>
                                         <Select
                                             name="trans_id"
-                                            onChange={this.handleChange}
+                                            onChange={this.handleChangeInputSelect}
                                             className="block w-full border rounded-md"
                                             options={this.state.optionsTransactions}
                                             value={this.state.formData.trans_id}
@@ -2070,7 +2092,7 @@ class Detail extends React.Component {
                                             <label className="block" htmlFor="type">Tipe :</label>
                                             <Select
                                                 name="type"
-                                                onChange={this.handleChange}
+                                                onChange={this.handleChangeInputSelect}
                                                 className={`block w-full border rounded-md ${this.state.alertBorder.name == 'type' && this.state.alertBorder.status ? 'border-red-300' : 'border-gray-300'}`}
                                                 isDisabled={this.state.typeDisabled}
                                                 options={this.optionsTransactionType}
@@ -2092,27 +2114,31 @@ class Detail extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mb-3">
-                                        <label className="block" htmlFor="date">Tanggal Transaksi :</label>
-                                        <input
-                                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${this.state.alertBorder.name == 'date' && this.state.alertBorder.status ? 'border-red-300' : 'border-gray-300'}`}
-                                            type="datetime-local"
-                                            placeholder="Masukkan Tanggal Transaksi"
-                                            name="date"
-                                            value={this.state.formData.date}
-                                            onChange={this.handleChange}
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="block" htmlFor="value">Nilai :</label>
-                                        <input
-                                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${this.state.alertBorder.name == 'value' && this.state.alertBorder.status ? 'border-red-300' : 'border-gray-300'}`}
-                                            type="number"
-                                            placeholder="Masukkan Nominal Transaksi"
-                                            name="value"
-                                            value={this.state.formData.value}
-                                            onChange={this.handleChange}
-                                        />
+                                    <div className="mb-3 grid grid-cols-2">
+                                        <div className="col-span-1 mr-5">
+                                            <label className="block" htmlFor="date">Tanggal Transaksi :</label>
+                                            <DatePicker
+                                                selected={this.state.formData.date}
+                                                onChange={this.handleChangeInputDateTime}
+                                                timeInputLabel="Waktu:"
+                                                dateFormat="dd/MM/yyyy h:mm aa"
+                                                showTimeInput
+                                                shouldCloseOnSelect={false}
+                                                wrapperClassName="w-full"
+                                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${this.state.alertBorder.name == 'date' && this.state.alertBorder.status ? 'border-red-300' : 'border-gray-300'}`}
+                                            />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="block" htmlFor="value">Nilai :</label>
+                                            <NumberFormatBase
+                                                format={this.formatRupiahInput}
+                                                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${this.state.alertBorder.name == 'value' && this.state.alertBorder.status ? 'border-red-300' : 'border-gray-300'}`}
+                                                placeholder="Masukkan Nominal Transaksi"
+                                                name="value"
+                                                value={this.state.formData.value}
+                                                onValueChange={this.handleChangeInputValue}
+                                            />
+                                        </div>
                                     </div>
                                     <div className="mb-3">
                                         <label className="block" htmlFor="desc">Deskripsi :</label>
@@ -2122,7 +2148,7 @@ class Detail extends React.Component {
                                             rows="3"
                                             name="desc"
                                             value={this.state.formData.desc}
-                                            onChange={this.handleChange}
+                                            onChange={this.handleChangeInputText}
                                         ></textarea>
                                     </div>
                                     <div className={`mb-3 ${this.state.formData.auto_detail ? '' : 'hidden'}`}>
@@ -2133,7 +2159,7 @@ class Detail extends React.Component {
                                             rows="3"
                                             name="desc_detail"
                                             value={this.state.formData.desc_detail}
-                                            onChange={this.handleChange}
+                                            onChange={this.handleChangeInputText}
                                         ></textarea>
                                     </div>
                                     <div>

@@ -1848,7 +1848,7 @@ class Dashboard extends React.Component {
                                 <Card color="sky">
                                     <div className="flex justify-between">
                                         <h5 className="sm:text-lg text-md font-semibold text-neutral-900">Saldo Terakhir per Bulan :</h5>
-                                        <span className="text-blue-500 hover:text-blue-600 cursor-pointer" onClick={this.handleClickDetail} type='balance'>Detail</span>
+                                        <span className="text-gray-100 hover:text-white cursor-pointer" onClick={this.handleClickDetail} type='balance'>Detail</span>
                                     </div>
                                     <h2 className="py-3 sm:text-5xl text-3xl text-white text-center">{this.convertRupiahFormat(this.state.infoCard.balance)}</h2>
                                 </Card>
@@ -1857,7 +1857,7 @@ class Dashboard extends React.Component {
                                 <Card color="green">
                                     <div className="flex justify-between">
                                         <h5 className="sm:text-lg text-md font-semibold text-neutral-900">Pemasukkan :</h5>
-                                        <span className="text-blue-500 hover:text-blue-600 cursor-pointer" onClick={this.handleClickDetail} type='add'>Detail</span>
+                                        <span className="text-gray-100 hover:text-white cursor-pointer" onClick={this.handleClickDetail} type='add'>Detail</span>
                                     </div>
                                     <h2 className="py-3 sm:text-5xl text-3xl text-white text-center">{this.convertRupiahFormat(this.state.infoCard.income)}</h2>
                                 </Card>
@@ -1866,7 +1866,7 @@ class Dashboard extends React.Component {
                                 <Card color="red">
                                     <div className="flex justify-between">
                                         <h5 className="sm:text-lg text-md font-semibold text-neutral-900">Pengeluaran :</h5>
-                                        <span className="text-blue-500 hover:text-blue-600 cursor-pointer" onClick={this.handleClickDetail} type='minus'>Detail</span>
+                                        <span className="text-gray-100 hover:text-white cursor-pointer" onClick={this.handleClickDetail} type='minus'>Detail</span>
                                     </div>
                                     <h2 className="py-3 sm:text-5xl text-3xl text-white text-center">{this.convertRupiahFormat(this.state.infoCard.spending)}</h2>
                                 </Card>
