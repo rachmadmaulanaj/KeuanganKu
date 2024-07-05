@@ -87,12 +87,16 @@ const Modal = (props) => {
 						}
 					</div>
 					<div className="mt-3 flex justify-end">
-						<button
-							className={`mr-3 px-3 py-1 rounded text-white ${isDisabledShowMore ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-400 hover:bg-blue-500'}`}
-							onClick={handleViewMore} disabled={isDisabledShowMore}
-						>
-							Lihat Selengkapnya
-						</button>
+						{
+							props.viewDetail.type === 'balance' && (
+								<button
+									className={`mr-3 px-3 py-1 rounded text-white ${isDisabledShowMore ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-400 hover:bg-blue-500'}`}
+									onClick={handleViewMore} disabled={isDisabledShowMore}
+								>
+									Lihat Selengkapnya
+								</button>
+							)
+						}
 						<button
 							className="bg-gray-300 px-3 py-1 rounded"
 							onClick={handleClose}

@@ -1,16 +1,13 @@
 import React from "react";
 import { db } from '../firebase';
 import { collection, query, onSnapshot, orderBy, getDocs, getDoc, limit, addDoc, where } from "firebase/firestore";
-import Header from "../components/Header";
 import Card from "../components/Card";
 import CardCollapse from "../components/CardCollapse";
 import Swal from 'sweetalert2';
-import ReactLoading from 'react-loading';
 import Select from 'react-select';
 import { NumberFormatBase } from 'react-number-format';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
-import dateTimeID from 'date-fns/locale/id'; // Import locale
 
 class Detail extends React.Component {
     constructor(props) {
@@ -1759,7 +1756,7 @@ class Detail extends React.Component {
         - transaksi isi = massuk tabel detail
         */
         if (name === 'trans_id') {
-            if (!e.value) {
+            if (!value.value) {
                 type_disabled_value = false;
             } else {
                 type_value = { type: '', auto_detail: false, desc_detail: '' };
