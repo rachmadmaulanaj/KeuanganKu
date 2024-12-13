@@ -1621,18 +1621,26 @@ class Detail extends React.Component {
                         const last_date = new Date(documentSnapshot.data().date.seconds * 1000);
                         const current_date = new Date();
 
-                        let result = [{ value: '', label: 'Pilih Periode', name: 'period' }];
-                        while (last_date.getMonth() <= current_date.getMonth()) {
+                        let result = [];
+                        while (
+                            last_date.getFullYear() * 100 + last_date.getMonth() <= 
+                            current_date.getFullYear() * 100 + current_date.getMonth()
+                        ) {
                             let month = last_date.toLocaleString('default', { month: 'long' });
                             let month_number = last_date.getMonth();
                             let year = last_date.getFullYear();
                             result.push({
                                 value: `${year}|${month_number}`,
                                 label: `${month} ${year}`,
-                                name: 'period',
+                                name: 'period'
                             });
                             last_date.setMonth(last_date.getMonth() + 1);
                         }
+                        result.sort((a, b) => {
+                            const [yearA, monthA] = a.value.split('|').map(Number);
+                            const [yearB, monthB] = b.value.split('|').map(Number);
+                            return yearB - yearA || monthB - monthA;
+                        });
                         resolve(result);
                     }
                 });
