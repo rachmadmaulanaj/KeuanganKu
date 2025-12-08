@@ -1,8 +1,8 @@
-import React from "react"
+import { memo } from 'react'
 import { convertRupiahFormat } from "../../../utils/global"
 import Table from "../../../components/Table"
 
-const TableViewFinancialSummary = React.memo(({ data, classHeight }) => {
+const TableViewFinancialSummary = memo(({ data, classHeight }) => {
     const columnsArr = [
         {
             title: 'Bulan',

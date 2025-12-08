@@ -1,8 +1,8 @@
-import React from "react"
+import { memo } from 'react'
 import { convertRupiahFormat, convertThousandFormat } from "../../../utils/global"
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6"
 
-const CardTotalIncome = React.memo(({ data }) => {
+const CardTotalIncome = memo(({ data }) => {
     const incomeExpenseTotal = data.income.value - data.expense.value;
     const incomeConvert = data.income.value < 1 ? 1 : data.income.value;
     const incomeExpensePercent = (incomeExpenseTotal / incomeConvert) * 100;

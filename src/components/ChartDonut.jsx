@@ -1,8 +1,8 @@
-import React, { useEffect } from "react"
+import { memo, useEffect } from 'react'
 import Chart from "react-apexcharts";
 import { convertRupiahFormat } from "../utils/global";
 
-const ChartDonut = React.memo(({ data }) => {
+const ChartDonut = memo(({ data }) => {
     const series = data.series;
     const labels = data.labels;
     const options = {

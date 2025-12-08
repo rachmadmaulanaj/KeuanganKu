@@ -1,6 +1,6 @@
-import React from 'react'
+import { memo } from 'react'
 
-const FilterInput = React.memo(({ filters, options, handleChange }) => {
+const FilterInput = memo(({ filters, options, handleChange }) => {
     return (
         <div className="d-flex flex-column flex-md-row justify-content-between">
             <div className="input-group w-auto">

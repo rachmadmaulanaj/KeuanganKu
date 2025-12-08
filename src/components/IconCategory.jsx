@@ -1,11 +1,11 @@
-import React, { Suspense } from 'react'
+import { memo, Suspense, lazy } from 'react'
 import { FaBan, FaHourglassHalf } from "react-icons/fa6"
 
-const IconCategory = React.memo(({ icon, size = 40, type }) => {
+const IconCategory = memo(({ icon, size = 40, type }) => {
     // Komponen fallback jika ikon tidak valid
     const InvalidIcon = () => <span style={{ color: 'white' }}><FaBan size={size * 0.6} className="text-white" /></span>;
 
-    const IconComponent = React.lazy(() =>
+    const IconComponent = lazy(() =>
         import('react-icons/fa6').then(module => {
             const SelectedIcon = module[icon];
 

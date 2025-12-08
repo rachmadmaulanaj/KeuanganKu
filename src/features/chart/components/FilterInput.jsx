@@ -1,6 +1,6 @@
-import React from 'react'
+import { memo } from 'react'
 
-export const FilterInputPeriode = React.memo(({ filterYear, filterMonth, optionYear, optionMonth, handleChange }) => {
+export const FilterInputPeriode = memo(({ filterYear, filterMonth, optionYear, optionMonth, handleChange }) => {
     return (
         <div className="d-flex justify-content-between">
             <div className="input-group w-auto">

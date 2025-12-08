@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FaSortUp, FaSortDown } from "react-icons/fa6"
 import { convertRupiahFormat } from "../utils/global"
 

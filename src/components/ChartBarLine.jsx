@@ -1,7 +1,7 @@
-import React from "react"
+import { memo } from 'react'
 import Chart from "react-apexcharts"
 
-const ChartBarLine = React.memo(({ data }) => {
+const ChartBarLine = memo(({ data }) => {
     const categories = data.categories;
     const colors = data.colors;
     const series = data.series;

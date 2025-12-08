@@ -1,10 +1,10 @@
-import React from 'react'
+import { memo } from 'react'
 import { convertDateFormat, convertRupiahFormat } from "../../../utils/global"
 
 import Card from "../../../components/Card"
 import CollapseCard from "../../../components/CollapseCard"
 
-const CardViewTransaction = React.memo(({ data, handleEdit, handleDelete }) => {
+const CardViewTransaction = memo(({ data, handleEdit, handleDelete }) => {
     return (
         <div children="overflow-auto">
             {

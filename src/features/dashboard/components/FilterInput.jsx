@@ -1,6 +1,6 @@
-import React from "react"
+import { memo } from 'react'
 
-const FilterInput = React.memo(({ type, filters, options, handleChange }) => {
+const FilterInput = memo(({ type, filters, options, handleChange }) => {
     return (
         <>
             {

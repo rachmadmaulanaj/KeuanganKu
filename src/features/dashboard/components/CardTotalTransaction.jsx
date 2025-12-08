@@ -1,7 +1,7 @@
-import React from "react"
+import { memo } from 'react'
 import ChartBar from "../../../components/ChartBar"
 
-const CardTotalTransaction = React.memo(({ data }) => {
+const CardTotalTransaction = memo(({ data }) => {
     return (
         <div className="d-flex flex-column flex-md-row">
             <div className="p-3 m-auto">

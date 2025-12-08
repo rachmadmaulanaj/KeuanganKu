@@ -1,9 +1,9 @@
-import React from 'react'
+import { memo } from 'react'
 import { NumericFormat } from 'react-number-format'
 import DatePicker from "react-datepicker"
 import 'react-datepicker/dist/react-datepicker.css'
 
-const FormInput = React.memo(({ form, inputOptions, alertBorderInput, handleChangeForm, handleSubmitForm }) => {
+const FormInput = memo(({ form, inputOptions, alertBorderInput, handleChangeForm, handleSubmitForm }) => {
     return (
         <form className="overflow-auto h-form-add" onSubmit={handleSubmitForm}>
             <div className="row mx-0">

@@ -1,4 +1,4 @@
-import React from 'react'
+import { memo } from 'react'
 import { convertDateFormat, convertRupiahFormat } from "../utils/global"
 
 import { FaPencil, FaTrash } from "react-icons/fa6"
@@ -6,7 +6,7 @@ import Table from "../components/Table"
 import IconCategory from "../components/IconCategory"
 import TooltipC from "../components/TooltipC"
 
-const TableViewDetail = React.memo(({ data, action, classHeight, handleEdit, handleDelete }) => {
+const TableViewDetail = memo(({ data, action, classHeight, handleEdit, handleDelete }) => {
     const dataDetails = data.flatMap(transaction => transaction.details);
     const columnsArr = [
         { title: '', className: '', width: '5%' },

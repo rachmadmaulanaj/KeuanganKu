@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import { Tooltip } from 'bootstrap'
 
-const TooltipC = React.memo(({ title, children }) => {
+const TooltipC = memo(({ title, children }) => {
     const wrapperRef = useRef(null);
     const tooltipInstance = useRef(null);
 

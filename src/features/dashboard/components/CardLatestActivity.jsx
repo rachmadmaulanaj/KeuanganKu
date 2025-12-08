@@ -1,10 +1,10 @@
-import React from "react"
+import { memo } from 'react'
 import { convertDateFormat, convertRupiahFormat } from "../../../utils/global"
 
 import IconCategory from "../../../components/IconCategory"
 import TooltipC from "../../../components/TooltipC"
 
-const CardLatestActivity = React.memo(({ data }) => {
+const CardLatestActivity = memo(({ data }) => {
     return (
         <>
             {

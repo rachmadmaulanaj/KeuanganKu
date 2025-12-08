@@ -1,9 +1,9 @@
-import React from "react"
+import { memo } from 'react'
 import { convertRupiahFormat } from "../../../utils/global"
 import Card from "../../../components/Card"
 import { FaWallet, FaMoneyBillTrendUp, FaCartArrowDown, FaSackDollar } from "react-icons/fa6"
 
-export const CardInfoBeginningBalance = React.memo(({ data }) => {
+export const CardInfoBeginningBalance = memo(({ data }) => {
     return (
         <Card className="text-bg-primary h-100">
             <h4 className="card-title">Saldo Awal</h4>
@@ -15,7 +15,7 @@ export const CardInfoBeginningBalance = React.memo(({ data }) => {
     )
 });
 
-export const CardInfoIncome = React.memo(({ data }) => {
+export const CardInfoIncome = memo(({ data }) => {
     return (
         <Card className="text-bg-success h-100">
             <h4 className="card-title">Pemasukkan</h4>
@@ -27,7 +27,7 @@ export const CardInfoIncome = React.memo(({ data }) => {
     )
 });
 
-export const CardInfoExpense = React.memo(({ data }) => {
+export const CardInfoExpense = memo(({ data }) => {
     return (
         <Card className="text-bg-danger h-100">
             <h4 className="card-title">Pengeluaran</h4>
@@ -39,7 +39,7 @@ export const CardInfoExpense = React.memo(({ data }) => {
     )
 });
 
-export const CardInfoCurrentBalance = React.memo(({ data }) => {
+export const CardInfoCurrentBalance = memo(({ data }) => {
     return (
         <Card className="text-bg-white">
             <h4 className="card-title">Saldo Saat Ini</h4>

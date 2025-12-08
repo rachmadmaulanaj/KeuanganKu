@@ -1,8 +1,8 @@
-import React from "react"
+import { memo } from 'react'
 import Chart from "react-apexcharts"
 import { convertRupiahFormat } from "../utils/global"
 
-const ChartColumn = React.memo(({ data }) => {
+const ChartColumn = memo(({ data }) => {
     const series = data.series;
     const options = {
         chart: {

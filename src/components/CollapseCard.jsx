@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import { memo, useRef, useEffect, Fragment } from 'react'
 import Collapse from 'bootstrap/js/dist/collapse'
 import { convertDateFormat, convertRupiahFormat } from "../utils/global"
 
@@ -6,7 +6,7 @@ import { FaPencil, FaTrash } from "react-icons/fa6"
 import IconCategory from "../components/IconCategory"
 import TooltipC from "../components/TooltipC"
 
-const CollapseCard = React.memo(({ detail, handleEdit, handleDelete }) => {
+const CollapseCard = memo(({ detail, handleEdit, handleDelete }) => {
     const collapseRef = useRef(null);
     const bsCollapseRef = useRef(null);
 
@@ -34,7 +34,7 @@ const CollapseCard = React.memo(({ detail, handleEdit, handleDelete }) => {
                             {
                                 detail.length ? (
                                     detail.map((item, index) => (
-                                        <React.Fragment key={index}>
+                                        <Fragment key={index}>
                                             {/* Desktop View */}
                                             <tr className="d-none d-md-table-row">
                                                 <td style={{ width: '5%' }} className="p-1 align-top">
@@ -90,7 +90,7 @@ const CollapseCard = React.memo(({ detail, handleEdit, handleDelete }) => {
                                             <tr className="d-table-row d-md-none">
                                                 <td className="">{convertRupiahFormat(item.value)}</td>
                                             </tr>
-                                        </React.Fragment>
+                                        </Fragment>
                                     ))
                                 ) : (
                                     <tr>
