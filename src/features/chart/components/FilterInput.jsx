@@ -23,7 +23,7 @@ export const FilterInputPeriode = memo(({ filterYear, filterMonth, optionYear, o
     )
 });
 
-export const FilterInputSearchCategory = React.memo(({ filterSearch, filterCategory, optionCategory, handleChange }) => {
+export const FilterInputSearchCategory = memo(({ filterSearch, filterCategory, optionCategory, handleChange }) => {
     return (
         <div>
             <div className="input-group">
@@ -40,7 +40,7 @@ export const FilterInputSearchCategory = React.memo(({ filterSearch, filterCateg
     )
 });
 
-export const FilterInputType = React.memo(({ filter, option, handleChange }) => {
+export const FilterInputType = memo(({ filter, option, handleChange }) => {
     return (
         <div>
             <div className="input-group">

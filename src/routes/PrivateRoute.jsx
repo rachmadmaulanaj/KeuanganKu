@@ -1,14 +1,17 @@
 // src/routes/PrivateRoute.js
 import { Navigate } from 'react-router-dom'
+import supabase from '../lib/supabaseClient'
 import moment from 'moment'
 
 export default function PrivateRoute({ children }) {
-    const checkSessionLocalStorage = () => {
+    const checkSessionLocalStorage = async () => {
         const sessionData = localStorage.getItem('session_data');
         const sessionDataFormat = moment(sessionData, "YYYY-MM-DD HH:mm:ss");
 
         if (!sessionDataFormat.isValid()) {
             localStorage.removeItem('session_data');
+            localStorage.removeItem('user_id');
+            await supabase.auth.signOut();
             return <Navigate to="/" replace />;
         }
 
@@ -17,6 +20,8 @@ export default function PrivateRoute({ children }) {
 
         if (diffInHours >= 24) {
             localStorage.removeItem('session_data');
+            localStorage.removeItem('user_id');
+            await supabase.auth.signOut();
             return <Navigate to="/" replace state={{ alert: "Sesi anda telah habis" }} />;
         }
 

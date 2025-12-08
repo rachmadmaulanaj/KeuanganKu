@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from 'react-router-dom'
 import { checkPasscode } from '../services/authService'
+import supabase from '../../../lib/supabaseClient'
 import Swal from "sweetalert2"
 import moment from 'moment'
 
@@ -36,12 +37,32 @@ export default function useFormInput(setLoading) {
         });
 
         try {
-            const checkAuth = await checkPasscode(password);
-            if (!checkAuth) {
+            // Cek passcode dan dapatkan UUID
+            const passcodeData = await checkPasscode(password);
+            if (!passcodeData) {
                 Swal.close();
                 Swal.fire({ icon: 'error', text: 'Kode yang Anda masukkan salah!' });
                 return;
             }
+
+            // Login ke Supabase menggunakan Anonymous Auth
+            const { data: authData, error: authError } = await supabase.auth.signInAnonymously({
+                options: {
+                    data: {
+                        user_id: passcodeData.user_id || passcodeData.id
+                    }
+                }
+            });
+
+            if (authError) {
+                console.error('Supabase auth error:', authError);
+                Swal.close();
+                Swal.fire({ icon: 'error', text: 'Gagal autentikasi dengan server!' });
+                return;
+            }
+
+            // Simpan user_id dari passcode ke localStorage untuk backup
+            localStorage.setItem('user_id', passcodeData.user_id || passcodeData.id);
 
             Swal.close();
             Swal.fire({
@@ -58,6 +79,8 @@ export default function useFormInput(setLoading) {
             });
         } catch (error) {
             console.error('Error fetching data:', error);
+            Swal.close();
+            Swal.fire({ icon: 'error', text: 'Terjadi kesalahan pada sistem!' });
         }
     }
 
