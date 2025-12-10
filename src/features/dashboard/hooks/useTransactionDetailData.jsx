@@ -1,12 +1,10 @@
-import { useRef, useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { getDataTransactionsByPeriod } from '../services/transactionService'
 import { getDataDetailByTransaction, getDataLatestActivity } from '../services/detailService'
 import Swal from "sweetalert2"
 import moment from 'moment'
 
 export default function useTransactionDetailData(filters, categories) {
-    const isMounted = useRef(false);
-
     const [transactions, setTransactions] = useState([]);
     const [details, setDetails] = useState([]);
     const [dataCurrentBalance, setDataCurrentBalance] = useState([]);
@@ -79,6 +77,15 @@ export default function useTransactionDetailData(filters, categories) {
     }, [details, filters.type]);
 
     const dataChartTopCategory = useMemo(() => {
+        if (!categories.length || !details.length) {
+            return {
+                series: [{ data: [] }],
+                colors: ['#dc3545', '#fd7e14', '#ffc107', '#198754', '#0d6efd'],
+                categories: [],
+                totals: [],
+            };
+        }
+
         const totalPerCategory = details.reduce((acc, detail) => {
             if (detail.type !== "minus") return acc;
             if (!acc[detail.category_id]) {
@@ -119,8 +126,6 @@ export default function useTransactionDetailData(filters, categories) {
     }, [details]);
 
     useEffect(() => {
-        if (!isMounted.current) return;
-
         Swal.fire({
             title: 'Memuat data...',
             text: 'Silakan tunggu',
@@ -132,7 +137,9 @@ export default function useTransactionDetailData(filters, categories) {
 
         const loadDataTransaction = async () => {
             try {
-                const transactionsData = await getDataTransactionsByPeriod(filters.month, filters.year);
+                const month = filters.month ? filters.month : moment().month() + 1;
+                const year = filters.year ? filters.year : moment().year();
+                const transactionsData = await getDataTransactionsByPeriod(month, year);
                 setTransactions(transactionsData);
             } catch (error) {
                 console.error('Error fetching transactions:', error);
@@ -143,7 +150,7 @@ export default function useTransactionDetailData(filters, categories) {
     }, [filters.month, filters.year]);
 
     useEffect(() => {
-        if (!isMounted.current) return;
+        if (!transactions.length) return;
 
         const loadDataDetails = async () => {
             try {
@@ -167,8 +174,6 @@ export default function useTransactionDetailData(filters, categories) {
     }, [transactions]);
 
     useEffect(() => {
-        if (!isMounted.current) return;
-
         Swal.close();
     }, [details]);
 
@@ -209,8 +214,6 @@ export default function useTransactionDetailData(filters, categories) {
 
         loadDataCurrentBalance();
         loadDataLatestActivity();
-
-        isMounted.current = true;
     }, []);
 
     return { dataInfoFinance, dataLatestActivity, dataChartPerMonth, dataCurrentBalance, dataChartTopCategory };

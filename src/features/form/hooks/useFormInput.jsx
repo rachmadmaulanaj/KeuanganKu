@@ -11,7 +11,6 @@ export default function useFormInput(transactions, details, categories, loadData
         { value: 'add', label: 'Pemasukan' },
         { value: 'minus', label: 'Pengeluaran' },
     ]);
-    const isMounted = useRef(false);
 
     const [form, setForm] = useState({
         idEdit: 0,
@@ -237,8 +236,6 @@ export default function useFormInput(transactions, details, categories, loadData
     }, [details]);
 
     useEffect(() => {
-        if (!isMounted.current) return;
-
         const inputOptionsTransaction = transactions
             .filter(transactions => transactions.type !== 'balance')
             .map((transaction) => {
@@ -253,15 +250,9 @@ export default function useFormInput(transactions, details, categories, loadData
     }, [transactions]);
 
     useEffect(() => {
-        if (!isMounted.current) return;
-
         const inputOptionsCategory = categories.map((category) => ({ value: category.id, label: category.name }));
         setInputOptions(prev => ({ ...prev, category: inputOptionsCategory }));
     }, [categories]);
-
-    useEffect(() => {
-        isMounted.current = true;
-    }, []);
 
     return { form, inputOptions, alertBorderInput, handleChangeForm, handleSubmitForm, handleEdit, handleCloseEdit, handleDelete };
 }

@@ -4,8 +4,6 @@ import { getDataDetailByTransaction } from '../services/detailService'
 import Swal from "sweetalert2"
 
 export default function useTransactionDetailData(filters, categories) {
-    const isMounted = useRef(false);
-
     const [transactions, setTransactions] = useState([]);
     const [details, setDetails] = useState([]);
     const [transactionDetails, setTransactionDetails] = useState([]);
@@ -51,8 +49,6 @@ export default function useTransactionDetailData(filters, categories) {
     }, [filters.month, filters.year]);
 
     useEffect(() => {
-        if (!isMounted.current) return;
-
         Swal.fire({
             title: 'Memuat data...',
             text: 'Silakan tunggu',
@@ -66,7 +62,7 @@ export default function useTransactionDetailData(filters, categories) {
     }, [filters.month, filters.year]);
 
     useEffect(() => {
-        if (!isMounted.current) return;
+        if (!transactions.length) return;
 
         const loadDataDetails = async () => {
             try {
@@ -82,7 +78,7 @@ export default function useTransactionDetailData(filters, categories) {
     }, [transactions]);
 
     useEffect(() => {
-        if (!isMounted.current) return;
+        if (!categories.length || !details.length) return;
 
         const categoriesMap = new Map(categories.map(category => [category.id, category]));
         const detailsByTransId = details.reduce((map, detail) => {
@@ -118,10 +114,6 @@ export default function useTransactionDetailData(filters, categories) {
 
         Swal.close();
     }, [details]);
-
-    useEffect(() => {
-        isMounted.current = true;
-    }, []);
 
     return { transactions, details, transactionDetailsFiltered, loadDataTransaction };
 }

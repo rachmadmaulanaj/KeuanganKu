@@ -21,12 +21,11 @@ export default function useFilterInput(categories) {
         { value: 11, label: 'November' },
         { value: 12, label: 'Desember' }
     ]);
-    const isMounted = useRef(false);
 
     const [filters, setFilters] = useState({
         type: 'transaction',
-        month: '',
-        year: '',
+        month: moment().format('M'),
+        year: moment().format('YYYY'),
         category: '',
         search: ''
     });
@@ -50,11 +49,9 @@ export default function useFilterInput(categories) {
             const isSame = Object.keys(next).every(key => prev[key] === next[key]);
             return isSame ? prev : next;
         });
-    }, [filters]);
+    }, []);
 
     useEffect(() => {
-        if (!isMounted.current) return;
-
         const categoryOptions = [
             { value: '', label: 'Semua Kategori' },
             ...categories.map(category => ({ value: category.id, label: category.name }))
@@ -63,12 +60,6 @@ export default function useFilterInput(categories) {
     }, [categories]);
 
     useEffect(() => {
-        setFilters(prev => ({
-            ...prev,
-            month: moment().format('M'),
-            year: moment().format('YYYY')
-        }));
-
         const loadDataTransactionYears = async () => {
             try {
                 const transactionYearsData = await getDataTransactionYears();
@@ -81,8 +72,6 @@ export default function useFilterInput(categories) {
             }
         };
         loadDataTransactionYears();
-
-        isMounted.current = true;
     }, []);
 
     return { filters, filterOptions, handleChangeFilters };

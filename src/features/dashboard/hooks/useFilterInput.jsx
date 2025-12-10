@@ -23,9 +23,9 @@ export default function useFormInput() {
     ];
 
     const [filters, setFilters] = useState({
-        type: '',
-        month: '',
-        year: '',
+        type: 'transaction',
+        month: parseInt(moment().format('M')),
+        year: parseInt(moment().format('YYYY')),
     });
     const [filterOptions, setFilterOptions] = useState({
         type: filterTypeOptions,
@@ -43,15 +43,9 @@ export default function useFormInput() {
             const isSame = Object.keys(next).every(key => prev[key] === next[key]);
             return isSame ? prev : next;
         });
-    }, [filters]);
+    }, []);
 
     useEffect(() => {
-        setFilters({
-            type: 'transaction',
-            month: parseInt(moment().format('M')),
-            year: parseInt(moment().format('YYYY'))
-        });
-
         const loadDataTransactionYears = async () => {
             try {
                 const transactionYearsData = await getDataTransactionYears();
