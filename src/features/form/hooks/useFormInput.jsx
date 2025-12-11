@@ -111,19 +111,24 @@ export default function useFormInput(transactions, details, categories, loadData
         });
 
         try {
+            const userId = localStorage.getItem('user_id');
+            if (!userId) throw new Error('User ID tidak ditemukan');
+
             const dateFormat = moment(form.date).seconds(0).format('YYYY-MM-DD HH:mm:ss');
             const dataInputTransaction = {
                 date: dateFormat,
                 type: form.type,
                 description: form.description,
-                value: form.value
+                value: form.value,
+                user_id: userId
             };
             const dataInputDetail = {
                 trans_id: form.transaction,
                 category_id: form.category,
                 date: dateFormat,
                 description: form.description,
-                value: form.value
+                value: form.value,
+                user_id: userId
             };
 
             if (form.idEdit) {
